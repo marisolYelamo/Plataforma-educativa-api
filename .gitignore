@@ -1,0 +1,15 @@
+# modules
+node_modules
+
+# env file
+.env
+
+# build folder 
+dist
+pgdata
+
+# json
+courses.json
+testInfo.json
+
+.DS_Store

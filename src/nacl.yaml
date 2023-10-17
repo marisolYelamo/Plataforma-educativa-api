@@ -1,0 +1,98 @@
+- group: user
+  permissions:
+    - resource: /*
+      methods: "*"
+      action: allow
+      subRoutes:
+        - resource: "v1/bot/*"
+          methods: "*"
+          action: deny
+- group: bot
+  permissions:
+    - resource: /*
+      methods: "*"
+      action: deny
+      subRoutes:
+        - resource: "v1/users/:email/discord"
+          methods: "PATCH"
+          action: allow
+        - resource: "v1/users"
+          methods: "GET"
+          action: allow
+- group: backoffice
+  permissions:
+    - resource: /*
+      methods: "*"
+      action: deny
+      subRoutes:
+        - resource: "v1/backoffice/*" # Delete when cohorts are finally extracted from pledu
+          methods: "*"
+          action: allow
+        - resource: "v1/users/search" # Until auth api is made
+          methods: "*"
+          action: allow
+        - resource: "v1/users/roles/:courseTag" # Change param accordingly
+          methods: "POST, PUT"
+          action: allow
+        - resource: "v1/users"
+          methods: "GET, POST"
+          action: allow
+        - resource: "v1/users/populate"
+          methods: "POST"
+          action: allow
+        - resource: "v1/users/:id"
+          methods: "GET, PUT"
+          action: allow
+        - resource: "v1/auth/activate/token"
+          methods: "POST"
+          action: allow
+        - resource: "v1/roles"
+          methods: "GET"
+          action: allow
+        - resource: "v1/roles/tags/:tag"
+          methods: "GET"
+          action: allow
+        - resource: "v1/roles/users/:id"
+          methods: "GET"
+          action: allow
+        - resource: "v1/users/:userId/roles"
+          methods: "PUT"
+          action: allow
+- group: plataforma_educativa
+  permissions:
+    - resource: /*
+      methods: "*"
+      action: deny
+      subRoutes:
+        - resource: "v1/users"
+          methods:
+            - GET
+          action: allow
+        - resource: "v1/users/:id"
+          methods:
+            - GET
+          action: allow
+        - resource: "v1/auth/activate/token"
+          methods: "POST"
+          action: allow
+- group: landing
+  permissions:
+    - resource: /*
+      methods: "*"
+      action: deny
+      subRoutes:
+        - resource: "v1/payments/intro/inscription"
+          methods: "POST"
+          action: allow
+        - resource: "v1/users/populate"
+          methods: "POST"
+          action: allow
+        - resource: "v1/auth/activate/token"
+          methods: "POST"
+          action: allow
+        - resource: "v1/users/roles/:roleId"
+          methods: "POST"
+          action: allow
+        - resource: "v1/users"
+          methods: "GET"
+          action: allow

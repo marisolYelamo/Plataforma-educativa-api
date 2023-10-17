@@ -1,0 +1,2903 @@
+openapi: 3.0.1
+info:
+  title: Plataforma educativa API
+  description: RESTful API developed with NodeJS, Typescript and Express
+  contact:
+    email: marisolroioyelamo@gmail.com
+  version: 1.0.0
+externalDocs:
+  url: https://editor.swagger.io/
+  description: Open this swagger file to see all paths in a better interface
+servers:
+  - url: https://api.plataforma5.la/v1/
+    description: Production PLEDU server
+  - url: https://api-beta.plataforma5.la/v1/
+    description: Development Plataforma Educativa server
+tags:
+  - name: auth
+    description: Authorization paths and functions
+  - name: users
+    description: Everything about Plataforma Educativa users
+  - name: users (only admin)
+    description: admin operations on users
+  - name: roles
+    description: Roles that Plataforma Educativa users have
+  - name: roles (only admin)
+    description: admin operations on roles
+  - name: permissions
+    description: Permissions that each role has
+  - name: permissions (only admin)
+    description: admin operations on permissions
+  - name: courses
+    description: All Plataforma Educativa courses!
+  - name: courses (only admin)
+    description: admin operations on courses
+  - name: modules
+    description: Modules inside a Plataforma Educativa course
+  - name: modules (only admin)
+    description: admin operations on modules
+  - name: topics
+    description: Topics inside a Plataforma Educativa module
+  - name: topics (only admin)
+    description: admin operations on topics
+  - name: contents
+    description: Contents inside a Plataforma Educativa topic
+  - name: contents (only admin)
+    description: admin operations on contents
+  - name: payments
+    description: Information about enrollments through paypal or mercadopago
+  - name: progression
+    description: Information about Plataforma Educativa users´ progression
+components:
+  schemas:
+    Users:
+      type: object
+      properties:
+        id:
+          type: integer
+        salt:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        birthdate:
+          type: string
+        active:
+          type: boolean
+        country:
+          type: string
+        password:
+          type: string
+        lastName:
+          type: string
+        firstName:
+          type: string
+        city:
+          type: string
+        activeToken:
+          type: string
+        resetToken:
+          type: string
+        knowledge:
+          type: string
+    Roles:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        color:
+          type: string
+        accessLevel:
+          type: integer
+    Permissions:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        type:
+          type: string
+    Courses:
+      type: object
+      properties:
+        id:
+          type: integer
+        span:
+          type: integer
+        slug:
+          type: string
+        image:
+          type: string
+        title:
+          type: string
+        duration:
+          type: string
+        description:
+          type: string
+    Modules:
+      type: object
+      properties:
+        id:
+          type: integer
+        span:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        courseId:
+          type: integer
+        description:
+          type: string
+        visibility:
+          type: boolean
+    Topics:
+      type: object
+      properties:
+        id:
+          type: integer
+        span:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        moduleId:
+          type: integer
+        visibility:
+          type: boolean
+    Contents:
+      type: object
+      properties:
+        id:
+          type: integer
+        span:
+          type: integer
+        slug:
+          type: string
+        title:
+          type: string
+        topicId:
+          type: integer
+        visibility:
+          type: boolean
+        contentHtml:
+          type: string
+        contentMarkdown:
+          type: string
+    Payments:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: integer
+        currency:
+          type: string
+        discount:
+          type: integer
+        course:
+          type: string
+    UserContent:
+      type: object
+      properties:
+        content:
+          type: object
+          $ref: "#/components/schemas/Contents"
+        UserContent:
+          type: object
+          properties:
+            id:
+              type: integer
+            UserId:
+              type: integer
+            ContentId:
+              type: integer
+            count:
+              type: integer
+    UserTopic:
+      type: object
+      properties:
+        topic:
+          type: object
+          $ref: "#/components/schemas/Topics"
+        UserTopic:
+          type: object
+          properties:
+            id:
+              type: integer
+            UserId:
+              type: integer
+            TopicId:
+              type: integer
+            count:
+              type: integer
+    UserModule:
+      type: object
+      properties:
+        module:
+          type: object
+          $ref: "#/components/schemas/Modules"
+        UserModule:
+          type: object
+          properties:
+            id:
+              type: integer
+            UserId:
+              type: integer
+            ModuleId:
+              type: integer
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: []
+paths:
+  /ping:
+    get:
+      summary: Checks if server works okay
+      security: []
+      responses:
+        200:
+          description: OK
+          content:
+            plain/text:
+              schema:
+                type: string
+        500:
+          description: Something is wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /auth/login:
+    post:
+      tags:
+        - auth
+      summary: User logs into Plataforma Educativa
+      requestBody:
+        description: Email and password for authentication
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+        required: true
+      responses:
+        401:
+          description: Unauthorized. Mail not found or wrong credentials.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        205:
+          description: User comes from old Plataforma Educativa and needs to reset password (mail sent)
+          content: {}
+        200:
+          description: "User logged in (sets cookie with token)"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /auth/register:
+    post:
+      tags:
+        - auth
+      summary: Registers user in the database
+      requestBody:
+        description: User info to be registered
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Users"
+        required: true
+      responses:
+        400:
+          description: Email is not valid, is already in use or hasn´t been entered
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        201:
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: "#/components/schemas/Users"
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /auth/activate:
+    post:
+      tags:
+        - auth
+      summary: Activates account using user token
+      requestBody:
+        description: Token that is used to activate the account
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+        required: true
+      responses:
+        400:
+          description: Required parameter is missing, wrong type or wrong status account
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Account activated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /auth/forgot:
+    post:
+      tags:
+        - auth
+      summary: Ask for a token to reset the password (one user or more)
+      requestBody:
+        description: Emails of the user to reset their password
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                emails:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: Emails sent to reset password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /auth/reset_password/{token}:
+    post:
+      tags:
+        - auth
+      summary: Actually changes password after opening the email
+      parameters:
+        - name: token
+          in: path
+          description: user token
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: new password and confirmation
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+                confirmPassword:
+                  type: string
+        required: true
+      responses:
+        400:
+          description: Passwords dont match or fields are missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        401:
+          description: Invalid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users:
+    get:
+      tags:
+        - users
+      summary: get all users
+      parameters:
+        - name: page
+          in: query
+          description: Page where the result begins (eg if sent 2, skips page 1)
+          required: false
+          schema:
+            type: string
+        - name: size
+          in: query
+          description: amount of items returned
+          required: false
+          schema:
+            type: integer
+        - name: search
+          in: query
+          description: name of the user you are searching for
+          required: false
+          schema:
+            type: string
+      responses:
+        200:
+          description: users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Users"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/me:
+    get:
+      tags:
+        - users
+      summary: Gets logged user and achieves persistance
+      responses:
+        200:
+          description: User ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        401:
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/bulkDelete:
+    post:
+      tags:
+        - users
+        - users (only admin)
+      summary: deletes one or many users
+      requestBody:
+        description: Array of users to delete (mails)
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: string
+        required: true
+      responses:
+        200:
+          description: Users deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        400:
+          description: You can´t delete yourself
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/{id}:
+    get:
+      tags:
+        - users
+      summary: Finds user by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - users
+      summary: Update a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Object with attributes to update
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Users"
+        required: true
+      responses:
+        200:
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/{id}/password:
+    patch:
+      tags:
+        - users
+        - users (only admin)
+      summary: Admin changes user password
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: New password
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                newPassword:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                      success:
+                        type: boolean
+                  message:
+                    type: string
+        400:
+          description: Missing parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/roles/{roleId}:
+    post:
+      tags:
+        - users
+        - users (only admin)
+      summary: Adds a role to a user
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Users that will have a role added (id)
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: integer
+        required: true
+      responses:
+        201:
+          description: Roles added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Users"
+                  errors:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Users"
+        400:
+          description: Missing parameters or users that already have a role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Role not found or users not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - users
+        - users (only admin)
+      summary: Remove role from a user
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Users that will have a role removed (id)
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                users:
+                  type: array
+                  items:
+                    type: integer
+        required: true
+      responses:
+        200:
+          description: Roles added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Users"
+                  errors:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Users"
+        400:
+          description: Missing parameters or users that already have a role
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Role not found or users not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - users
+        - users (only admin)
+      summary: Finds users by roles
+      parameters:
+        - name: roleId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Page where the result begins (eg if sent 2, skips page 1)
+          required: false
+          schema:
+            type: integer
+        - name: size
+          description: amount of items returned
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Users found by role
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Users"
+        404:
+          description: Role not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /roles:
+    get:
+      tags:
+        - roles
+      summary: gets all existing roles
+      responses:
+        401:
+          description: You don´t have access level
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Array of roles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Roles"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - roles
+        - roles (only admin)
+      summary: Creates a role
+      requestBody:
+        description: Attributes needed to create a role
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Roles"
+      responses:
+        400:
+          description: Required parameter is missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        201:
+          description: Role created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Roles"
+  /roles/{id}:
+    get:
+      tags:
+        - roles
+      summary: Gets a single role by id (if you have access to that particular role)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Role found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Roles"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - roles
+        - roles (only admin)
+      summary: Updates a role
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Attributes that will be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Roles"
+      responses:
+        200:
+          description: Role found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Roles"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - roles
+        - roles (only admin)
+      summary: deletes a role
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Role deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /roles/{id}/permissions/{permissionId}:
+    post:
+      tags:
+        - roles
+        - roles (only admin)
+      summary: Adds a permisison to a role
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: permissionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        404:
+          description: Permission not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        201:
+          description: Permission added to role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - roles
+        - roles (only admin)
+      summary: removes a permission from a role
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: permissionId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        404:
+          description: Permission not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Permission added to role
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /roles/users/{userId}:
+    get:
+      tags:
+        - roles
+        - roles (only admin)
+      summary: Finds certain users´ roles
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Users´ roles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Roles"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /permissions:
+    get:
+      tags:
+        - permissions
+      summary: Gets all permissions
+      responses:
+        200:
+          description: All permissions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Permissions"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - permissions
+        - permissions (only admin)
+      summary: Creates a permission
+      requestBody:
+        required: true
+        description: Attributes to create a permission
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Permissions"
+      responses:
+        201:
+          description: Permission created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Permissions"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /permissions/{id}:
+    get:
+      tags:
+        - permissions
+      summary: Gets a single permission by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        400:
+          description: Required parameter is missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Permission not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Permission found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Permissions"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - permissions
+        - permissions (only admin)
+      summary: Updates an existing permission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        description: Attributes that will be updated
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Permissions"
+      responses:
+        400:
+          description: Required parameter is missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Permission not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Permission found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Permissions"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - permissions
+        - permissions (only admin)
+      summary: Deletes an existing permission
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Permission not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        204:
+          description: Permission deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /permissions/{id}/courses/{courseId}:
+    post:
+      tags:
+        - permissions
+        - permissions (only admin)
+      summary: Adds a permission to a course
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        404:
+          description: Permission or course not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        201:
+          description: Permission added to course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - permissions
+        - permissions (only admin)
+      summary: Removes a permission from a course
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        404:
+          description: Permission or course not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Permission added to course
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /courses:
+    get:
+      tags:
+        - courses
+      summary: gets all courses that are available according to the users´s roles
+      responses:
+        200:
+          description: Array of courses available to that user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Courses"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - courses
+        - courses (only admin)
+      summary: Creates a course
+      requestBody:
+        required: true
+        description: Attributes to create a course
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Courses"
+      responses:
+        400:
+          description: Required parameters are missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        201:
+          description: Course created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Courses"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /courses/search/{slug}:
+    get:
+      tags:
+        - courses
+      summary: Gets course according to slug (if you have access)
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: visibility
+          in: query
+          required: true
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: Course found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      course:
+                        $ref: "#/components/schemas/Courses"
+                      accessLevels:
+                        type: array
+                        items:
+                          type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /courses/{id}:
+    get:
+      tags:
+        - courses
+      summary: gets course by id (if you have access)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: visibility
+          in: query
+          required: true
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: Course found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      course:
+                        $ref: "#/components/schemas/Courses"
+                      accessLevels:
+                        type: array
+                        items:
+                          type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - courses
+        - courses (only admin)
+      summary: Updates an existing course
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Attributes that will be updated
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Courses"
+        required: true
+      responses:
+        400:
+          description: Bad request
+          content: {}
+        200:
+          description: Course updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Courses"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - courses
+        - courses (only admin)
+      summary: Deletes a course
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        400:
+          description: Bad request
+          content: {}
+        204:
+          description: Permission deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /courses/{id}/modules:
+    get:
+      tags:
+        - courses
+      summary: Gets courses´s modules (if you have access)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        400:
+          description: Required parameter is missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Courses´s modules
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Modules"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /courses/{id}/span:
+    patch:
+      tags:
+        - courses
+        - courses (only admin)
+      summary: Updates a course´s span
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Attributes that will be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                span:
+                  type: integer
+      responses:
+        400:
+          description: Bad request
+          content: {}
+        200:
+          description: Span updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Courses"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /modules:
+    post:
+      tags:
+        - modules
+        - modules (only admin)
+      summary: Creates a new module
+      requestBody:
+        description: Attributes needed to create a new module
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                courseId:
+                  type: string
+                title:
+                  type: string
+      responses:
+        400:
+          description: Required parameter is missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        201:
+          description: Module created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Modules"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /modules/span:
+    put:
+      tags:
+        - modules
+        - modules (only admin)
+      summary: Updates a module´s span
+      requestBody:
+        description: Array with the modules that need their span updated
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                modules:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      span:
+                        type: integer
+      responses:
+        400:
+          description: Information is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Span updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /modules/{id}/topics:
+    get:
+      tags:
+        - modules
+      summary: gets modules´s topics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        400:
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Topics found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Topics"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /modules/{id}:
+    get:
+      tags:
+        - modules
+      summary: gets module by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: searchBy
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        400:
+          description: Required parameter is missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Module found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Modules"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - modules
+        - modules (only admin)
+      summary: Updates a module
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Attributes that will be updated
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Modules"
+        required: true
+      responses:
+        400:
+          description: Required parameter is missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Module updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Modules"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - modules
+        - modules (only admin)
+      summary: Deletes a module
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        400:
+          description: Required parameter is missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        204:
+          description: Module deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /topics:
+    post:
+      tags:
+        - topics
+        - topics (only admin)
+      summary: Creates a topic
+      requestBody:
+        description: Attributes needed to create a new topic
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                moduleId:
+                  type: string
+                title:
+                  type: string
+      responses:
+        400:
+          description: Required parameter is missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        201:
+          description: Topic created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Topics"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /topics/span:
+    put:
+      tags:
+        - topics
+        - topics (only admin)
+      summary: Updates a topic´s span
+      requestBody:
+        description: Array with the topics that need their span updated
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                modules:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      span:
+                        type: integer
+      responses:
+        400:
+          description: Information is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Span updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /topics/slug/{slug}:
+    get:
+      tags:
+        - topics
+      summary: Gets topic with contents by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        404:
+          description: Topic not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Topic found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Topics"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /topics/{id}/contents:
+    get:
+      tags:
+        - topics
+      summary: Get topic with contents by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        404:
+          description: Topic not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Topic found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Topics"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /topics/{id}:
+    get:
+      tags:
+        - topics
+      summary: gets topic by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        404:
+          description: Topic not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Topic found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Topics"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - topics
+        - topics (only admin)
+      summary: Updates a topic
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Attributes that will be updated
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Topics"
+        required: true
+      responses:
+        404:
+          description: Topic not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Topic updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Topics"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - topics
+        - topics (only admin)
+      summary: Deletes a topic
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        404:
+          description: Topic not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        204:
+          description: Topic deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /contents:
+    post:
+      tags:
+        - contents
+        - contents (only admin)
+      summary: Creates a content
+      requestBody:
+        description: Attributes needed to create a new content
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topicId:
+                  type: string
+                title:
+                  type: string
+      responses:
+        400:
+          description: Required parameter is missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Topic not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        201:
+          description: Content created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Contents"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /contents/span:
+    put:
+      tags:
+        - contents
+        - contents (only admin)
+      summary: Updates a content´s span
+      requestBody:
+        description: Array with the contents that need their span updated
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                modules:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      span:
+                        type: integer
+      responses:
+        400:
+          description: Information is missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Span updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /contents/{slug}:
+    get:
+      tags:
+        - contents
+      summary: Gets content by slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        400:
+          description: Bad request
+          content: {}
+        404:
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Content found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Contents"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /contents/{id}:
+    put:
+      tags:
+        - contents
+        - contents (only admin)
+      summary: Updates a content
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Attributes that will be updated
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Contents"
+        required: true
+      responses:
+        400:
+          description: Bad request
+          content: {}
+        404:
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Content updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    $ref: "#/components/schemas/Contents"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - contents
+        - contents (only admin)
+      summary: Deletes a content
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        400:
+          description: Bad request
+          content: {}
+        404:
+          description: Content not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        204:
+          description: Content deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /payments/signUp:
+    post:
+      tags:
+        - payments
+      summary: Creates a new payment
+      requestBody:
+        description: Attributes needed to create a new payment
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    firstName:
+                      type: string
+                    lastName:
+                      type: string
+                    email:
+                      type: string
+                    phone:
+                      type: integer
+                    country:
+                      type: string
+                    password:
+                      type: string
+                course:
+                  type: object
+                  properties:
+                    course:
+                      type: string
+                    amount:
+                      type: integer
+                    currency:
+                      type: string
+                    knowledge:
+                      type: string
+                    source:
+                      type: string
+                    turn:
+                      type: string
+                    month:
+                      type: string
+                    alianza:
+                      type: string
+                    paymentMethod:
+                      type: string
+                    paymentId:
+                      type: string
+      responses:
+        400:
+          description: Information missing
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        201:
+          description: User created, roled assigned and payment registered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /payments/mp/preference:
+    post:
+      tags:
+        - payments
+      summary: Creates a mercadopago order
+      requestBody:
+        description: Information needed to create a mercadopago order
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                quantity:
+                  type: integer
+                unitPrice:
+                  type: integer
+                autoReturn:
+                  type: boolean
+                successURL:
+                  type: string
+                failureURL:
+                  type: string
+      responses:
+        400:
+          description: Required parameters are missing or wrong type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        201:
+          description: Preference created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  data:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /progression/{progressionId}:
+    get:
+      tags:
+        - progression
+      summary: Finds all users that have completed X progression
+      parameters:
+        - name: progressionId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        400:
+          description: Required parameters are missing or invalid type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Progression not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Array of users that have completed the progression
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Users"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - progression
+      summary: Generates progression for a certain user
+      parameters:
+        - name: progressionId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        400:
+          description: Required parameters are missing or invalid type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: User or progression are not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Array that contains the progression
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "#/components/schemas/UserContent"
+                    - $ref: "#/components/schemas/UserModule"
+                    - $ref: "#/components/schemas/UserTopic"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - progression
+      summary: Deletes user progression
+      parameters:
+        - name: progressionId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        400:
+          description: Required parameters are missing or invalid type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        204:
+          description: Progression deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: integer
+                  message:
+                    type: string
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /progression/course/{courseId}:
+    get:
+      tags:
+        - progression
+      summary: Gets user progression related to X course
+      parameters:
+        - name: courseId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        400:
+          description: Required parameters are missing or invalid type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: User or course are not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Array of progressions that the user has completed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "#/components/schemas/UserContent"
+                    - $ref: "#/components/schemas/UserModule"
+                    - $ref: "#/components/schemas/UserTopic"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /progression/users/inactive:
+    get:
+      tags:
+        - progression
+      summary: Gets users that havent completed a content in more than 30 days
+      responses:
+        200:
+          description: Array of inactive users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Users"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /progression/users/{id}:
+    get:
+      tags:
+        - progression
+      summary: Gets progressions from X user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        400:
+          description: Required parameters are missing or invalid type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        200:
+          description: Array of progressions that the user has completed
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: "#/components/schemas/UserContent"
+                    - $ref: "#/components/schemas/UserModule"
+                    - $ref: "#/components/schemas/UserTopic"
+        500:
+          description: Something went wrong
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"

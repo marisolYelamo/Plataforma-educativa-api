@@ -1,0 +1,49 @@
+version: '3.7'
+services:
+  local:
+    build:
+      context: .
+    image: api_plataforma_educativa
+    volumes:
+      - ./src:/api/src
+    container_name: api_plataforma_educativa_local
+    env_file:
+      - ./.env
+    depends_on:
+       database:
+         condition: service_healthy
+    ports:
+      - '4004:4004'
+      - '9229:9229'
+    entrypoint: ['npm', 'run', 'dev']
+    networks:
+      - plataforma_educativa_network
+      - backoffice_performance_network
+  database:
+    image: postgres:14.7
+    user: postgres
+    container_name: plataforma_educativa_api_db
+    ports:
+      - 5432
+    restart: always
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+      #- ./sql/schema/2021-schema.sql:/docker-entrypoint-initdb.d/schema-db.sql
+      # - ./sql/schema+data.sql:/docker-entrypoint-initdb.d/data.sql
+    environment:
+      POSTGRES_USER: marisolyelamo
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: plataforma_educativa
+    #tty: true
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - plataforma_educativa_network
+networks:
+  plataforma_educativa_network:
+    name: plataforma_educativa_network
+  backoffice_performance_network:
+    external: true
