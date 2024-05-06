@@ -10,7 +10,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import db from "./db";
 import routes from "./routes";
-import { config, localhosts } from "./config";
+import { config /* localhosts */ } from "./config";
 import { ApiErrors } from "./controllers/utils/errorHandlers/httpErrors";
 import ServiceError from "./services/utils/serviceErrors";
 import { formattedNowDate } from "./controllers/utils/format";
@@ -60,16 +60,16 @@ const app = express();
 
 // Middlewares.
 
-const baseOrigins = [config.PLATAFORMA_EDUCATIVA_CLIENT_HOST];
-
-const allowedOrigins =
+/* const baseOrigins = [config.PLATAFORMA_EDUCATIVA_CLIENT_HOST];
+ */
+/* const allowedOrigins =
   config.NODE_ENV === "local" || config.NODE_ENV === "dev"
     ? [...baseOrigins, ...localhosts]
-    : baseOrigins;
+    : baseOrigins; */
 
 app.use(
   cors({
-    origin: allowedOrigins, //temporary until cohort is made in backoffice
+    origin: "*", //temporary until cohort is made in backoffice
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     credentials: true
   })
