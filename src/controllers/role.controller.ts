@@ -1,4 +1,4 @@
-import { Op } from "sequelize";
+
 import { NextFunction, Request, Response } from "express";
 
 import RoleService from "../services/role.service";
