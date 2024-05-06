@@ -5,7 +5,7 @@ import express, {
   urlencoded,
   NextFunction
 } from "express";
-
+import "dotenv/config";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import db from "./db";
@@ -14,6 +14,7 @@ import { config, localhosts } from "./config";
 import { ApiErrors } from "./controllers/utils/errorHandlers/httpErrors";
 import ServiceError from "./services/utils/serviceErrors";
 import { formattedNowDate } from "./controllers/utils/format";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 
 // ______________________________________________
 //                   ____
@@ -107,9 +108,9 @@ app.use(
   }
 );
 
-const port = config.PORT || 4004;
+const port = config.PORT || 4001;
 
-db.sync({ force: false })
+db.sync({ force: true })
   .then(({ config }) => {
     app.listen(port, () =>
       console.log(

@@ -92,7 +92,7 @@ ALTER SEQUENCE public.contents_id_seq OWNED BY public.contents.id;
 -- Name: courses; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.courses (
+CREATE TABLE public.pleduCourses (
     id integer NOT NULL,
     span integer,
     title character varying(128) NOT NULL,
@@ -105,13 +105,13 @@ CREATE TABLE public.courses (
 );
 
 
-ALTER TABLE public.courses OWNER TO postgres;
+ALTER TABLE public.pleduCourses OWNER TO marisol;
 
 --
 -- Name: courses_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.courses_id_seq
+CREATE SEQUENCE public.pleduCourses_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -120,20 +120,20 @@ CREATE SEQUENCE public.courses_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.courses_id_seq OWNER TO postgres;
+ALTER TABLE public.pleduCourses_id_seq OWNER TO marisol;
 
 --
 -- Name: courses_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.courses_id_seq OWNED BY public.courses.id;
+ALTER SEQUENCE public.pleduCourses_id_seq OWNED BY public.pleduCourses.id;
 
 
 --
 -- Name: modules; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.modules (
+CREATE TABLE public.pleduModules (
     id integer NOT NULL,
     "courseId" integer NOT NULL,
     span integer,
@@ -146,13 +146,13 @@ CREATE TABLE public.modules (
 );
 
 
-ALTER TABLE public.modules OWNER TO postgres;
+ALTER TABLE public.pleduModules OWNER TO marisol;
 
 --
 -- Name: modules_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.modules_id_seq
+CREATE SEQUENCE public.pleduModules_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -161,13 +161,13 @@ CREATE SEQUENCE public.modules_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.modules_id_seq OWNER TO postgres;
+ALTER TABLE public.pleduModules_id_seq OWNER TO postgres;
 
 --
 -- Name: modules_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.modules_id_seq OWNED BY public.modules.id;
+ALTER SEQUENCE public.pleduModules_id_seq OWNED BY public.pleduModules.id;
 
 
 --
@@ -182,7 +182,7 @@ CREATE TABLE public.permission_courses (
 );
 
 
-ALTER TABLE public.permission_courses OWNER TO postgres;
+ALTER TABLE public.permission_courses OWNER TO marisol;
 
 --
 -- Name: permission_roles; Type: TABLE; Schema: public; Owner: postgres
@@ -196,7 +196,7 @@ CREATE TABLE public.permission_roles (
 );
 
 
-ALTER TABLE public.permission_roles OWNER TO postgres;
+ALTER TABLE public.permission_roles OWNER TO marisol;
 
 --
 -- Name: permissions; Type: TABLE; Schema: public; Owner: postgres
@@ -211,8 +211,7 @@ CREATE TABLE public.permissions (
 );
 
 
-ALTER TABLE public.permissions OWNER TO postgres;
-
+ALTER TABLE public.permissions OWNER TO marisol;
 --
 -- Name: permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
@@ -226,7 +225,7 @@ CREATE SEQUENCE public.permissions_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.permissions_id_seq OWNER TO postgres;
+ALTER TABLE public.permissions_id_seq OWNER TO marisol;
 
 --
 -- Name: permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -249,7 +248,7 @@ CREATE TABLE public.resources (
 );
 
 
-ALTER TABLE public.resources OWNER TO postgres;
+ALTER TABLE public.resources OWNER TO marisol;
 
 --
 -- Name: resources_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -264,7 +263,7 @@ CREATE SEQUENCE public.resources_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.resources_id_seq OWNER TO postgres;
+ALTER TABLE public.resources_id_seq OWNER TO marisol;
 
 --
 -- Name: resources_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -277,7 +276,7 @@ ALTER SEQUENCE public.resources_id_seq OWNED BY public.resources.id;
 -- Name: roles; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.roles (
+CREATE TABLE public.rolesPledu (
     id integer NOT NULL,
     name character varying(128),
     color character varying(128),
@@ -287,13 +286,13 @@ CREATE TABLE public.roles (
 );
 
 
-ALTER TABLE public.roles OWNER TO postgres;
+ALTER TABLE public.rolesPledu OWNER TO marisol;
 
 --
 -- Name: roles_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.roles_id_seq
+CREATE SEQUENCE public.rolesPledu_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -302,13 +301,13 @@ CREATE SEQUENCE public.roles_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.roles_id_seq OWNER TO postgres;
+ALTER TABLE public.rolesPledu_id_seq OWNER TO marisol;
 
 --
 -- Name: roles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.roles_id_seq OWNED BY public.roles.id;
+ALTER SEQUENCE public.rolesPledu_id_seq OWNED BY public.rolesPledu.id;
 
 
 --
@@ -326,7 +325,7 @@ CREATE TABLE public.topics (
 );
 
 
-ALTER TABLE public.topics OWNER TO postgres;
+ALTER TABLE public.topics OWNER TO marisol;
 
 --
 -- Name: topics_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
@@ -341,7 +340,7 @@ CREATE SEQUENCE public.topics_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.topics_id_seq OWNER TO postgres;
+ALTER TABLE public.topics_id_seq OWNER TO marisol;
 
 --
 -- Name: topics_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -362,7 +361,7 @@ CREATE TABLE public.user_roles (
 );
 
 
-ALTER TABLE public.user_roles OWNER TO postgres;
+ALTER TABLE public.user_roles OWNER TO marisol;
 
 --
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
@@ -423,7 +422,7 @@ ALTER TABLE ONLY public.contents ALTER COLUMN id SET DEFAULT nextval('public.con
 -- Name: courses id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.courses ALTER COLUMN id SET DEFAULT nextval('public.courses_id_seq'::regclass);
+ALTER TABLE ONLY public.pleduCourses ALTER COLUMN id SET DEFAULT nextval('public.pleduCourses_id_seq'::regclass);
 
 
 --
@@ -451,7 +450,7 @@ ALTER TABLE ONLY public.resources ALTER COLUMN id SET DEFAULT nextval('public.re
 -- Name: roles id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_id_seq'::regclass);
+ALTER TABLE ONLY public.rolesPledu ALTER COLUMN id SET DEFAULT nextval('public.rolesPledu_id_seq'::regclass);
 
 
 --
@@ -488,7 +487,7 @@ ALTER TABLE ONLY public.contents
 -- Name: courses courses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.courses
+ALTER TABLE ONLY public.pleduCourses
     ADD CONSTRAINT courses_pkey PRIMARY KEY (id);
 
 
@@ -496,7 +495,7 @@ ALTER TABLE ONLY public.courses
 -- Name: courses courses_slug_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.courses
+ALTER TABLE ONLY public.pleduCourses
     ADD CONSTRAINT courses_slug_key UNIQUE (slug);
 
 
@@ -504,7 +503,7 @@ ALTER TABLE ONLY public.courses
 -- Name: courses courses_title_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.courses
+ALTER TABLE ONLY public.pleduCourses
     ADD CONSTRAINT courses_title_key UNIQUE (title);
 
 
@@ -552,8 +551,8 @@ ALTER TABLE ONLY public.resources
 -- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.roles
-    ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.rolesPledu
+    ADD CONSTRAINT rolesPledu_pkey PRIMARY KEY (id);
 
 
 --
@@ -609,7 +608,7 @@ ALTER TABLE ONLY public.contents
 --
 
 ALTER TABLE ONLY public.modules
-    ADD CONSTRAINT "modules_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES public.courses(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT "modules_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES public.pleduCourses(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

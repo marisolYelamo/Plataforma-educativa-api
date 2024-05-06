@@ -16,11 +16,11 @@ interface IMainDataBase {
 }
 
 export const mainDatabase: IMainDataBase = (() => {
-  const DB_HOST = "localhost"; //process.env.DB_HOST;
-  const DB_PORT = "5432"; //process.env.DB_PORT;
-  const DB_NAME = "plataforma_educativa"; //process.env.DB_NAME;
-  const POSTGRES_USER = "postgres"; //process.env.POSTGRES_USER;
-  const POSTGRES_PASSWORD = "postgres"; //process.env.POSTGRES_PASSWORD;
+  const DB_HOST = process.env.DB_HOST;
+  const DB_PORT = process.env.DB_PORT;
+  const DB_NAME = process.env.DB_NAME;
+  const POSTGRES_USER = process.env.POSTGRES_USER;
+  const POSTGRES_PASSWORD = process.env.POSTGRES_PASSWORD;
 
   if (
     !DB_HOST ||
@@ -49,10 +49,10 @@ export const mainDatabase: IMainDataBase = (() => {
 })();
 
 export const config: IConfig = (() => {
-  const PORT = "4004"; //process.env.PORT;
-  const NODE_ENV = "local"; //process.env.NODE_ENV;
-  const API_SECRET = "Zordon"; //process.env.API_SECRET;
-  const AUTH_TOKEN_EXPIRATION = "365d"; //process.env.AUTH_TOKEN_EXPIRATION;
+  const PORT = process.env.PORT;
+  const NODE_ENV = process.env.NODE_ENV;
+  const API_SECRET = process.env.API_SECRET;
+  const AUTH_TOKEN_EXPIRATION = process.env.AUTH_TOKEN_EXPIRATION;
   const PLATAFORMA_EDUCATIVA_CLIENT_HOST = "http://localhost:3001/";
   //process.env.PLATAFORMA_EDUCATIVA_CLIENT_HOST;
 
