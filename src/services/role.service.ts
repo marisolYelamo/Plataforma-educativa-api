@@ -9,13 +9,13 @@ class RoleService {
   public static async getAll(
     options?: WhereOptions<RoleInterface> | undefined
   ) {
-    return await Role.findAll({
+    return await Role.findAll()/* {
       where: options,
       order: [
         ["accessLevel", "ASC"],
         ["createdAt", "ASC"]
       ]
-    });
+    } */
   }
 
   public static async getRole(field: RoleKeys, value: RoleInterface[RoleKeys]) {
