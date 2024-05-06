@@ -23,6 +23,8 @@ class UserService {
     email: string;
     firstName?: string;
     lastName?: string;
+    password?: string;
+    secretKey: string
     roles?: number[];
   }) {
     const { roles, ...userFields } = body;
