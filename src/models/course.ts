@@ -75,7 +75,7 @@ Course.init(
     updatedAt: DataTypes.DATE
   },
   {
-    tableName: "courses",
+    tableName: "pleducourses",
     sequelize
   }
 );

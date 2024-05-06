@@ -57,17 +57,11 @@ class User
   declare lastName: CreationOptional<string>;
   declare email: string;
   declare password: CreationOptional<string>;
-  declare phone: CreationOptional<string>;
   declare active: CreationOptional<boolean>;
-  declare age: CreationOptional<number>;
-  declare sex: CreationOptional<string>;
-  declare birthdate: CreationOptional<Date>;
-  declare country: CreationOptional<string>;
   declare discordId: CreationOptional<string>;
   declare github: CreationOptional<string>;
   declare discordTag: CreationOptional<string>;
   declare knowledge: CreationOptional<string | null>;
-  declare city: CreationOptional<string | null>;
   declare salt: CreationOptional<string>;
   declare activeToken: CreationOptional<string>;
   declare resetToken: CreationOptional<string>;
@@ -191,32 +185,9 @@ User.init(
       type: DataTypes.STRING(128),
       allowNull: true
     },
-    phone: {
-      type: DataTypes.STRING(128),
-      defaultValue: ""
-    },
     active: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
-    },
-    age: {
-      type: DataTypes.VIRTUAL,
-      get() {
-        const diff_ms = Date.now() - this.get("birthdate")?.getTime();
-        const age_dt = new Date(diff_ms);
-
-        return Math.abs(age_dt.getUTCFullYear() - 1970);
-      }
-    },
-    sex: {
-      type: DataTypes.STRING(128)
-    },
-    birthdate: {
-      type: DataTypes.DATE
-    },
-    country: {
-      type: DataTypes.STRING(128),
-      defaultValue: ""
     },
     discordId: {
       type: DataTypes.STRING(128),
@@ -231,10 +202,6 @@ User.init(
       defaultValue: ""
     },
     knowledge: {
-      type: DataTypes.STRING(128),
-      defaultValue: ""
-    },
-    city: {
       type: DataTypes.STRING(128),
       defaultValue: ""
     },

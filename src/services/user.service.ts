@@ -18,8 +18,6 @@ import { RoleInterface } from "../interfaces/role.interfaces";
 import RoleService from "./role.service";
 import ServiceError from "./utils/serviceErrors";
 import UserEntry from "../models/userEntries";
-import UserChallenge from "../models/userChallenge";
-import { IUserChallenge } from "../interfaces/challenge.interface";
 
 class UserService {
   public static async addUser(body: {
@@ -661,54 +659,6 @@ class UserService {
       include: { model: Role, as: "roles" }
     });
     return updatedUser;
-  }
-
-  public static async submitChallenge(
-    userId: number,
-    challengeInfo: {
-      contentId: number;
-      challengeId: string;
-      score: number;
-    }
-  ): Promise<IUserChallenge> {
-    const { contentId, challengeId, score } = challengeInfo;
-
-    const existingChallenge = await UserService.getChallenge(
-      userId,
-      challengeId
-    );
-
-    const parsedChallengeInfo = {
-      UserId: userId,
-      ChallengeId: challengeId,
-      ContentId: contentId,
-      score
-    };
-
-    let result;
-
-    if (existingChallenge) {
-      result = await existingChallenge.update({
-        tryNumber: existingChallenge.tryNumber + 1,
-        score
-      });
-    } else {
-      result = UserChallenge.create(parsedChallengeInfo);
-    }
-
-    return result;
-  }
-
-  public static async getChallenge(
-    userId: number,
-    challengeId: string
-  ): Promise<UserChallenge | null> {
-    return await UserChallenge.findOne({
-      where: {
-        UserId: userId,
-        ChallengeId: challengeId
-      }
-    });
   }
 }
 

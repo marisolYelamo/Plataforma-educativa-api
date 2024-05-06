@@ -159,7 +159,6 @@ ALTER SEQUENCE public.commission_id_seq OWNED BY public.commission.id;
 
 CREATE TABLE public.content (
     id integer NOT NULL,
-    key uuid DEFAULT public.uuid_generate_v1() NOT NULL,
     span integer DEFAULT 0 NOT NULL,
     title character varying(128) NOT NULL,
     slug character varying(128) NOT NULL,
@@ -1447,7 +1446,7 @@ ALTER TABLE ONLY public."textFragment"
 --
 
 ALTER TABLE ONLY public.topics
-    ADD CONSTRAINT "topics_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES public.modules(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT "topics_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES public.pledumodules(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --
@@ -1503,7 +1502,7 @@ ALTER TABLE ONLY public.user_content
 --
 
 ALTER TABLE ONLY public.user_module
-    ADD CONSTRAINT "user_module_ModuleId_fkey" FOREIGN KEY ("ModuleId") REFERENCES public.modules(id) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT "user_module_ModuleId_fkey" FOREIGN KEY ("ModuleId") REFERENCES public.pledumodules(id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 --

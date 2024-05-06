@@ -19,9 +19,7 @@ const {
   getUsersByIds,
   updateUserRoles,
   getContentEntries,
-  addUserEntries,
-  submitChallenge,
-  getChallenge
+  addUserEntries
 } = UserController;
 
 const router = express.Router();
@@ -41,9 +39,6 @@ router
   .put(updateUser);
 
 router.put("/:userId/roles", updateUserRoles);
-
-router.post("/:userId/challenge", submitChallenge);
-router.get("/:userId/challenge/:challengeId", getChallenge);
 
 router.get("/:id/entries", getContentEntries);
 

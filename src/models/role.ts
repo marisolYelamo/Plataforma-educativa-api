@@ -66,7 +66,7 @@ Role.init(
     updatedAt: DataTypes.DATE
   },
   {
-    tableName: "roles",
+    tableName: "rolespledu",
     sequelize
   }
 );

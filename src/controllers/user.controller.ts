@@ -21,7 +21,6 @@ import {
 } from "../helpers/checkParameters";
 import httpStatusCodes from "./utils/errorHandlers/httpCodes";
 import { courses } from "../helpers/coursesTag";
-import ContentServices from "../services/content.service";
 
 class UserController {
   public static async getUser(
@@ -653,90 +652,6 @@ class UserController {
         ok({
           data: updatedUser,
           message: "User roles updated successfully."
-        })
-      );
-    } catch (err) {
-      checkAndHandleErrors(err, next);
-    }
-  }
-
-  public static async submitChallenge(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      checkMissingParameters(req.body, ["contentId", "challengeId", "score"]);
-      checkMissingParameters(req.params, ["userId"]);
-      checkTypeOf(req.body, "contentId", "number");
-      checkTypeOf(req.body, "challengeId", "string");
-      checkTypeOf(req.body, "score", "number");
-
-      const { contentId, challengeId, score } = req.body;
-      const { userId } = req.params;
-
-      const parsedUserId = Number(userId);
-
-      if (Number.isNaN(parsedUserId))
-        throw new Api400Error("The user id passed by params must be number");
-
-      const user = await UserService.getUserById(parsedUserId);
-      if (!user) throw new Api404Error(`User with ${userId} not found`);
-
-      const content = await ContentServices.checkContent(Number(contentId));
-      if (!content.exist)
-        throw new Api404Error(`Content with id ${contentId} not found`);
-
-      const challengeSubmission = await UserService.submitChallenge(
-        parsedUserId,
-        {
-          contentId,
-          challengeId,
-          score
-        }
-      );
-
-      res.status(httpStatusCodes.OK).json(
-        created({
-          data: challengeSubmission,
-          message: "Challenge submitted successfully"
-        })
-      );
-    } catch (err) {
-      checkAndHandleErrors(err, next);
-    }
-  }
-
-  public static async getChallenge(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> {
-    try {
-      checkMissingParameters(req.params, ["userId", "challengeId"]);
-
-      const { userId, challengeId } = req.params;
-
-      const parsedUserId = Number(userId);
-
-      if (Number.isNaN(parsedUserId))
-        throw new Api400Error("The user id passed by params must be number");
-
-      const user = await UserService.getUserById(parsedUserId);
-      if (!user)
-        throw new Api404Error(
-          `El usuario con id ${userId} no está registrado en nuestra base de datos.`
-        );
-
-      const challenge = await UserService.getChallenge(
-        parsedUserId,
-        challengeId
-      );
-
-      res.status(httpStatusCodes.OK).json(
-        created({
-          data: challenge,
-          message: "Challenge found successfully"
         })
       );
     } catch (err) {

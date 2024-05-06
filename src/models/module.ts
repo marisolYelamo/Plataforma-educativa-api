@@ -93,7 +93,7 @@ Module.init(
     updatedAt: DataTypes.DATE
   },
   {
-    tableName: "modules",
+    tableName: "pledumodules",
     sequelize
   }
 );

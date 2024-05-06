@@ -12,18 +12,11 @@ import UserModule from "./userModule";
 import UserContent from "./userContent";
 import UserFeedback from "./userFeedback";
 import UserEntry from "./userEntries";
-import UserChallenge from "./userChallenge";
 
 User.belongsToMany(Content, {
   as: "contentFeedbacks",
   onDelete: "CASCADE",
   through: UserFeedback
-});
-
-User.belongsToMany(Content, {
-  as: "contentChallenges",
-  onDelete: "CASCADE",
-  through: UserChallenge
 });
 
 User.belongsToMany(Content, {
@@ -42,12 +35,6 @@ Content.belongsToMany(User, {
   as: "userFeedbacks",
   onDelete: "CASCADE",
   through: UserFeedback
-});
-
-Content.belongsToMany(User, {
-  as: "userChallenges",
-  onDelete: "CASCADE",
-  through: UserChallenge
 });
 
 User.belongsToMany(Role, {

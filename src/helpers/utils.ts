@@ -57,16 +57,6 @@ export const formatDateHsAndMinutes = (date: Date) => {
 
 export const getRandomInt = (max: number) => Math.floor(Math.random() * max);
 
-export const challengeLinks =
-  config.NODE_ENV === "dev" || config.NODE_ENV === "local"
-    ? ["https://forms.gle/z6tNFQvfRfyL2XeK9"]
-    : [
-        "https://forms.gle/hmyk56P9PvBpTYFH7",
-        "https://forms.gle/RqyWnFoTFY6KMasu8",
-        "https://forms.gle/YMiq6QXAFNAGgXRG8",
-        "https://forms.gle/ekZaPvagwv8CsC3f8"
-      ];
-
 export const retryForm =
   config.NODE_ENV === "dev" || config.NODE_ENV === "local"
     ? {
