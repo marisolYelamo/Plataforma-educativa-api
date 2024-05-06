@@ -14,7 +14,7 @@ import {
   Api404Error
 } from "../controllers/utils/errorHandlers/httpErrors";
 
-import { decodeJWT, validateAPIToken } from "../helpers/jwt";
+import { decodeJWT } from "../helpers/jwt";
 
 class MiddlewaresController {
   public static async isStaff(
