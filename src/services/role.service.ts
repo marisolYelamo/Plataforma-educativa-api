@@ -1,14 +1,12 @@
 import { Role, User } from "../models";
-/* import { WhereOptions } from "sequelize";
- */
+/* import { WhereOptions } from "sequelize"; */
+
 import { getTopAccessLevel } from "../helpers/utils";
 import { RoleInterface, RoleKeys } from "../interfaces/role.interfaces";
 import ServiceError from "./utils/serviceErrors";
 
 class RoleService {
-  public static async getAll(
-    options?: WhereOptions<RoleInterface> | undefined
-  ) {
+  public static async getAll() {
     return await Role.findAll()/* {
       where: options,
       order: [
