@@ -120,7 +120,7 @@ db.sync({ force: false })
   })
   .catch((err) => {
     console.log(
-      `No se pudo sincronizar la base de datos, el error fue: ${err}`
+      `No se pudo sincronizar la base de datos, el error fue: ${err.stack}`
     );
   });
 
