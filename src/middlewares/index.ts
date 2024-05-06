@@ -185,8 +185,8 @@ class MiddlewaresController {
 
       const decodedToken = decodeJWT(token);
 
-      if (!decodedToken.user && !decodedToken.service)
-        throw new Api403Error("Not allowed to access resource");
+      if (!decodedToken.data.email){
+        throw new Api403Error("Not allowed to access resource")};
 
       validateAPIToken(token);
 
