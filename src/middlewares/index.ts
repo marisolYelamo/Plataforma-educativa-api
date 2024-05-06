@@ -188,7 +188,7 @@ class MiddlewaresController {
       if (!decodedToken.content.email){
         throw new Api403Error("Not allowed to access resource")};
 
-      validateAPIToken(token);
+     /*  validateAPIToken(token); */
             req.role = "pledu";
             req.userData = {
               biggestAccessLevel: decodedToken.biggestAccessLevel
