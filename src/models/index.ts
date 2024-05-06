@@ -11,24 +11,11 @@ import UserTopic from "./userTopic";
 import UserModule from "./userModule";
 import UserContent from "./userContent";
 import UserFeedback from "./userFeedback";
-import UserEntry from "./userEntries";
 
 User.belongsToMany(Content, {
   as: "contentFeedbacks",
   onDelete: "CASCADE",
   through: UserFeedback
-});
-
-User.belongsToMany(Content, {
-  as: "contentEntries",
-  onDelete: "CASCADE",
-  through: UserEntry
-});
-
-Content.belongsToMany(User, {
-  as: "userEntries",
-  onDelete: "CASCADE",
-  through: UserEntry
 });
 
 Content.belongsToMany(User, {

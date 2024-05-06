@@ -17,7 +17,6 @@ import {
 import { RoleInterface } from "../interfaces/role.interfaces";
 import RoleService from "./role.service";
 import ServiceError from "./utils/serviceErrors";
-import UserEntry from "../models/userEntries";
 
 class UserService {
   public static async addUser(body: {
@@ -34,17 +33,6 @@ class UserService {
     }
 
     return user;
-  }
-
-  public static async getContentEntries(id: number | string) {
-    const userEntries = await User.findOne({
-      where: { id },
-      include: {
-        association: User.associations.contentEntries,
-        as: "userEntry"
-      }
-    });
-    return userEntries;
   }
 
   public static async getOrCreateUsers({
@@ -469,18 +457,6 @@ class UserService {
     if (!user) throw new ServiceError("not_found", "User not found");
 
     return user.addRole(roleId);
-  }
-
-  public static async addUserEntries(userId: string, contentId: number) {
-    const user = await User.findByPk(userId);
-    const content = await Content.findByPk(contentId);
-    if (!user || !content)
-      throw new ServiceError("not_found", "User or content not found");
-    const userEntries = UserEntry.create({
-      UserId: user.id,
-      ContentId: content.id
-    });
-    return userEntries;
   }
 
   public static async removeRole(userId: number, roleId: number) {

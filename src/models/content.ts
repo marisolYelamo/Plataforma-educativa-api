@@ -106,7 +106,7 @@ Content.init(
     updatedAt: DataTypes.DATE
   },
   {
-    tableName: "contents",
+    tableName: "content",
     sequelize
   }
 );
