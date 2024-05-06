@@ -29,12 +29,8 @@ class RoleController {
         .json(unauthorized({ message: "You don't have access level" }));
 
     try {
-      const roles = await RoleService.getAll({
-        accessLevel: {
-          [Op.gte]: biggestAccessLevel
-        }
-      });
-
+      const roles = await RoleService.getAll();
+console.log(roles)
       res.status(200).json(ok({ data: roles }));
     } catch (err) {
       next(err);
