@@ -42,7 +42,7 @@ class UserController {
     const requiredParameters = ["email", "firstName", "lastName"];
     checkMissingParameters(req.body, requiredParameters);
 
-    const { email, firstName, lastName, roles } = req.body;
+    const { email, firstName, lastName, roles, password } = req.body;
 
     try {
       if (roles?.length && !roles.every((id: number) => id === +id))
@@ -52,6 +52,8 @@ class UserController {
         firstName,
         lastName,
         email,
+        password,
+        secretKey: "2c4d81aab2c04a86ba9f7b199bfac054",
         roles
       });
       res.status(201).json(created({ data: student }));
