@@ -185,38 +185,14 @@ class MiddlewaresController {
 
       const decodedToken = decodeJWT(token);
        console.log("DECODE",decodedToken)
-      if (!decodedToken.data.email){
+      if (!decodedToken.content.email){
         throw new Api403Error("Not allowed to access resource")};
 
       validateAPIToken(token);
-
-      if (decodedToken.service) {
-        switch (decodedToken.service) {
-          case "discord-bot":
-            req.role = "bot";
-            break;
-          case "backoffice-bff":
-            req.role = "backoffice";
-            req.userData = {
-              biggestAccessLevel: decodedToken.biggestAccessLevel
-            };
-            break;
-          case "landing-bff":
-            req.role = "landing";
-            req.userData = {
-              biggestAccessLevel: decodedToken.biggestAccessLevel
-            };
-            break;
-          case "pledu-bff":
             req.role = "pledu";
             req.userData = {
               biggestAccessLevel: decodedToken.biggestAccessLevel
             };
-            break;
-        }
-      } else {
-        req.role = "user";
-      }
 
       next();
     } catch (err) {
