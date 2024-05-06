@@ -110,7 +110,7 @@ app.use(
 
 const port = config.PORT || 4001;
 
-db.sync({ force: true })
+db.sync({ force: false })
   .then(({ config }) => {
     app.listen(port, () =>
       console.log(
