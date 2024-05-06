@@ -191,7 +191,7 @@ class MiddlewaresController {
      /*  validateAPIToken(token); */
             req.role = "pledu";
             req.userData = {
-              biggestAccessLevel: decodedToken.biggestAccessLevel
+              biggestAccessLevel: 5
             };
 
       next();
