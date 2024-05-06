@@ -1,7 +1,7 @@
 import morgan from "morgan";
 import express from "express";
 
-import acl from "../acl";
+/* import acl from "../acl"; */
 import authRoutes from "./auth";
 import userRoutes from "./user";
 import roleRoutes from "./role";
@@ -15,7 +15,7 @@ import progressionRoutes from "./progression";
 import MiddlewaresController from "../middlewares";
 
 const router = express.Router();
-const { validAccount, validUser, authMiddleware } = MiddlewaresController;
+const { /* validAccount, validUser, */ authMiddleware } = MiddlewaresController;
 
 router.use("/ping", (_req, res) => res.send("ok"));
 
