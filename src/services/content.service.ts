@@ -26,12 +26,7 @@ class ContentServices {
   }
 
   public static async getEntriesUsers(id: number | string) {
-    const contentWithEntries = await Content.findByPk(id, {
-      include: {
-        association: Content.associations.userEntries,
-        as: "contentEntries"
-      }
-    });
+    const contentWithEntries = await Content.findByPk(id);
     return contentWithEntries;
   }
 

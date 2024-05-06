@@ -12,14 +12,12 @@ const {
   createContent,
   deleteContent,
   updateContent,
-  rankContent,
-  getUserEntries
+  rankContent
 } = ContentController;
 
 router.post("/", isStaff, createContent);
 router.put("/span", isStaff, updateSpan);
 router.get("/:slug", getContent);
-router.get("/:id/entries", getUserEntries);
 router
   .route("/:id")
   .put(isStaff, updateContent)

@@ -1,6 +1,6 @@
 import { Op, WhereOptions } from "sequelize";
 
-import { Content, Role, User } from "../models";
+import { Role, User } from "../models";
 import {
   createJWT,
   decodeJWT,

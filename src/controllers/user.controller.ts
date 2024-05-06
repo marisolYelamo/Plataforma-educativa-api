@@ -60,20 +60,6 @@ class UserController {
     }
   }
 
-  public static async getContentEntries(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
-    const { id } = req.params;
-    try {
-      const contentEntries = await UserService.getContentEntries(id);
-      res.status(200).json(ok({ data: contentEntries }));
-    } catch (error) {
-      checkAndHandleErrors(error, next);
-    }
-  }
-
   public static async getOrCreateUsers(
     req: Request<
       Record<string, unknown>,
@@ -409,23 +395,6 @@ class UserController {
       );
     } catch (err) {
       checkAndHandleErrors(err, next);
-    }
-  }
-
-  public static async addUserEntries(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<any> {
-    const { id, contentId } = req.params;
-    try {
-      const entrieUser = await UserService.addUserEntries(
-        id,
-        Number(contentId)
-      );
-      return res.status(201).json(created({ data: entrieUser }));
-    } catch (error) {
-      checkAndHandleErrors(error, next);
     }
   }
 
