@@ -184,7 +184,7 @@ class MiddlewaresController {
         throw new Api401Error("Authorization token missing");
 
       const decodedToken = decodeJWT(token);
-
+       console.log.log(decodedToken)
       if (!decodedToken.data.email){
         throw new Api403Error("Not allowed to access resource")};
 
