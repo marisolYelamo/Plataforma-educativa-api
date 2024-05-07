@@ -57,6 +57,7 @@ class User
   declare lastName: CreationOptional<string>;
   declare email: string;
   declare password: CreationOptional<string>;
+  declare secretKey: CreationOptional<string>;
   declare active: CreationOptional<boolean>;
   declare discordId: CreationOptional<string>;
   declare github: CreationOptional<string>;
@@ -184,6 +185,9 @@ User.init(
     password: {
       type: DataTypes.STRING(128),
       allowNull: true
+    },
+    secretKey: {
+      type: DataTypes.STRING(128)
     },
     active: {
       type: DataTypes.BOOLEAN,

@@ -184,15 +184,16 @@ class MiddlewaresController {
         throw new Api401Error("Authorization token missing");
 
       const decodedToken = decodeJWT(token);
-       console.log("DECODE",decodedToken)
-      if (!decodedToken.content.email){
-        throw new Api403Error("Not allowed to access resource")};
+      console.log("DECODE", decodedToken);
+      if (!decodedToken.content.email) {
+        throw new Api403Error("Not allowed to access resource");
+      }
 
-     /*  validateAPIToken(token); */
-            req.role = "pledu";
-            req.userData = {
-              biggestAccessLevel: 5
-            };
+      /*  validateAPIToken(token); */
+      req.role = "pledu";
+      req.userData = {
+        biggestAccessLevel: 5
+      };
 
       next();
     } catch (err) {

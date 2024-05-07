@@ -43,7 +43,7 @@ class UserController {
     checkMissingParameters(req.body, requiredParameters);
 
     const { email, firstName, lastName, roles, password } = req.body;
-  const secretKey="2c4d81aab2c04a86ba9f7b199bfac054"
+    const secretKey = "2c4d81aab2c04a86ba9f7b199bfac054";
     try {
       if (roles?.length && !roles.every((id: number) => id === +id))
         throw new Api400Error("The roles ids passed by body must be numbers");

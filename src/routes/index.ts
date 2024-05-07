@@ -26,12 +26,12 @@ router.use("/auth", authRoutes);
 
 router.use(authMiddleware);
 /* router.use(acl.authorize); */
-router.use("/users",/*  validUser, validAccount, */ userRoutes);
+router.use("/users", /*  validUser, validAccount, */ userRoutes);
 router.use("/roles", /* validUser, validAccount, */ roleRoutes);
 router.use("/topics", /* validUser, validAccount, */ topicRoutes);
 router.use("/modules", /* validUser, validAccount, */ moduleRoutes);
 router.use("/courses", /* validUser, validAccount, */ courseRoutes);
-router.use("/contents",/*  validUser, validAccount, */ contentRoutes);
+router.use("/contents", /*  validUser, validAccount, */ contentRoutes);
 router.use("/permissions", /* validUser, validAccount, */ permissionRoutes);
 router.use("/progression", /* validUser, validAccount, */ progressionRoutes);
 

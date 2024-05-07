@@ -24,7 +24,7 @@ class UserService {
     firstName?: string;
     lastName?: string;
     password?: string;
-    secretKey: string
+    secretKey: string;
     roles?: number[];
   }) {
     const { roles, ...userFields } = body;

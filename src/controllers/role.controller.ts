@@ -1,4 +1,3 @@
-
 import { NextFunction, Request, Response } from "express";
 
 import RoleService from "../services/role.service";
@@ -30,7 +29,7 @@ class RoleController {
 
     try {
       const roles = await RoleService.getAll();
-console.log(roles)
+      console.log(roles);
       res.status(200).json(ok({ data: roles }));
     } catch (err) {
       next(err);

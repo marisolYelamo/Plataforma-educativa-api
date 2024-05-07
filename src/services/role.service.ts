@@ -7,7 +7,7 @@ import ServiceError from "./utils/serviceErrors";
 
 class RoleService {
   public static async getAll() {
-    return await Role.findAll()/* {
+    return await Role.findAll(); /* {
       where: options,
       order: [
         ["accessLevel", "ASC"],
