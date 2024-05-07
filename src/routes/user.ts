@@ -17,7 +17,8 @@ const {
   addUser,
   getOrCreateUsers,
   getUsersByIds,
-  updateUserRoles
+  updateUserRoles,
+  getUserByEmail
 } = UserController;
 
 const router = express.Router();
@@ -35,7 +36,7 @@ router
   .route("/:id")
   .get(getUser)
   .put(updateUser);
-
+router.get("/email/:email", getUserByEmail);
 router.put("/:userId/roles", updateUserRoles);
 
 router.route("/:email/discord").patch(updateUserByEmail);

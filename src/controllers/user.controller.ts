@@ -37,6 +37,22 @@ class UserController {
       checkAndHandleErrors(err, next);
     }
   }
+  public static async getUserByEmail(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> {
+    const email = req.params.email;
+    try {
+      const user = await UserService.getUserByEmail(email);
+      if (!user) {
+        throw new Api404Error("user email not found");
+      }
+      return res.status(200).json(ok({ data: user }));
+    } catch (err) {
+      checkAndHandleErrors(err, next);
+    }
+  }
 
   public static async addUser(req: Request, res: Response, next: NextFunction) {
     const requiredParameters = ["email", "firstName", "lastName"];
