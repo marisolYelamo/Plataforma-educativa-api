@@ -144,7 +144,10 @@ class UserService {
         "resetToken",
         "activeToken",
         "active",
-        "phone",
+      ]
+    });
+  }
+        /* "phone",
         "age",
         "discordId",
         "discordTag",
@@ -152,10 +155,7 @@ class UserService {
         "id",
         "country",
         "city",
-        "knowledge"
-      ]
-    });
-  }
+        "knowledge" */
 
   public static async checkForgotToken(
     resetToken: string
