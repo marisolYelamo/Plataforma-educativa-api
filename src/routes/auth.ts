@@ -1,14 +1,6 @@
 import express from "express";
-import acl from "../acl";
-import UserController from "../controllers/user.controller";
-import MiddlewaresController from "../middlewares";
 
-const {
-  validUser,
-  validAccount,
-  isStaff,
-  authMiddleware
-} = MiddlewaresController;
+import UserController from "../controllers/user.controller";
 
 const {
   login,
@@ -29,25 +21,13 @@ router.post("/activate", activateAccount);
 router.post("/forgot", resetPassword);
 router.post("/reset_password/:token", changePassword);
 
-router.use(authMiddleware);
-router.use(acl.authorize);
+/* router.use(authMiddleware);
+router.use(acl.authorize); */
 
-router.post(
-  "/activate/token",
-  validUser,
-  validAccount,
-  isStaff,
-  generateActivateToken
-);
+router.post("/activate/token", generateActivateToken);
 
-router.patch(
-  "/:id/password",
-  validUser,
-  validAccount,
-  isStaff,
-  changeUserPasswordFromAdmin
-);
+router.patch("/:id/password", changeUserPasswordFromAdmin);
 
-router.patch("/myPassword", validUser, validAccount, changeMyPassword);
+router.patch("/myPassword", changeMyPassword);
 
 export default router;

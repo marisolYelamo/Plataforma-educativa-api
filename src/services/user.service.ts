@@ -228,10 +228,6 @@ class UserService {
     email: string;
     firstName: string;
     lastName: string;
-    phone: string;
-    country: string;
-    birthdate: Date;
-    sex: string;
   }) {
     const {
       foundUser,

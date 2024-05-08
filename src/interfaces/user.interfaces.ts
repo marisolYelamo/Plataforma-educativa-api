@@ -6,16 +6,10 @@ export interface IUser {
   lastName?: string;
   email: string;
   password?: string;
-  phone?: string;
   active?: boolean;
-  age?: number;
-  sex?: string;
-  birthdate?: Date;
-  country?: string;
-  discordId?: string | null;
-  discordTag?: string;
   knowledge?: string | null;
-  city?: string | null;
+  discordId?: string | null;
+  discordTag?: string | null;
   salt?: string;
   activeToken?: string;
   resetToken?: string;
