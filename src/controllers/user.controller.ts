@@ -319,7 +319,7 @@ class UserController {
     res: Response,
     next: NextFunction
   ): Promise<any> {
-    const { token } = req.params;
+    const { email } = req.params;
     const { password, confirmPassword } = req.body;
 
     try {
@@ -329,9 +329,7 @@ class UserController {
       if (password !== confirmPassword)
         throw new Api400Error("Passwords don't match");
 
-      const { userId } = await UserService.checkForgotToken(token);
-
-      const user = await UserService.changePassword(userId, password);
+      const user = await UserService.changePassword(email, password);
 
       res.status(200).json(ok({ data: user }));
     } catch (err) {

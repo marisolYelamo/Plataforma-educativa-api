@@ -143,11 +143,11 @@ class UserService {
         "email",
         "resetToken",
         "activeToken",
-        "active",
+        "active"
       ]
     });
   }
-        /* "phone",
+  /* "phone",
         "age",
         "discordId",
         "discordTag",
@@ -427,10 +427,10 @@ class UserService {
   }
 
   public static async changePassword(
-    id: string,
+    email: string,
     password: string
   ): Promise<User> {
-    const user = await User.findByPk(id);
+    const user = await User.findOne({ where: { email } });
     if (!user) throw new ServiceError("not_found", "Usuario no encontrado");
     return user.changePassword(password);
   }

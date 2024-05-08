@@ -19,7 +19,7 @@ router.post("/login", login);
 router.post("/activate", activateAccount);
 
 router.post("/forgot", resetPassword);
-router.post("/reset_password/:token", changePassword);
+router.post("/reset_password/:email", changePassword);
 
 /* router.use(authMiddleware);
 router.use(acl.authorize); */
