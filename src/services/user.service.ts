@@ -192,6 +192,7 @@ class UserService {
     return User.findOne({
       where: whereClause,
       attributes: [
+        "id",
         "firstName",
         "lastName",
         "email",
