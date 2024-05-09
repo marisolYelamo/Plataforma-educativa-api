@@ -323,12 +323,12 @@ class UserController {
     const { password, confirmPassword } = req.body;
 
     try {
-      if (!password || !confirmPassword)
-        throw new Api400Error("Fields are missing");
-
-      if (password !== confirmPassword)
+      if (!password || !confirmPassword){
+        throw new Api400Error(`Fields are missing, password: ${password}, confirmPassword: ${confirmPassword}, email: ${email}`);
+      }
+      if (password !== confirmPassword){
         throw new Api400Error("Passwords don't match");
-
+      }
       const user = await UserService.changePassword(email, password);
 
       res.status(200).json(ok({ data: user }));
