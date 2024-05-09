@@ -161,7 +161,7 @@ class UserController {
         ignorePagination
       } = req.query;
       const { limit, offset } = getPagination(page, size, !!ignorePagination);
-
+      console.log("QUERY", req.query)
       if (discordId && typeof discordId !== "string")
         return res.status(400).send("discordId parameter must be a string");
       if (active && typeof active !== "string")
